@@ -18,13 +18,18 @@ app.set("trust proxy", 1);
 app.use(express.json({ limit: "15mb" }));
 app.use(express.urlencoded({ extended: true, limit: "15mb" }));
 
-// Session setup
-const PgSession = connectPgSimple(session);
-const sessionStore = new PgSession({
-  conString: process.env.DATABASE_URL,
-  tableName: "session",
-  createTableIfMissing: true,
-});
+// Session store — use PostgreSQL if DATABASE_URL is set, otherwise in-memory
+let sessionStore: session.Store | undefined;
+if (process.env.DATABASE_URL) {
+  const PgSession = connectPgSimple(session);
+  sessionStore = new PgSession({
+    conString: process.env.DATABASE_URL,
+    tableName: "session",
+    createTableIfMissing: true,
+  });
+} else {
+  console.warn("No DATABASE_URL — using in-memory session store (sessions will not persist across restarts).");
+}
 
 app.use(
   session({

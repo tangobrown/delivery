@@ -20,14 +20,16 @@ router.post("/lookup", requireAuth, async (req, res) => {
     const result = await lookupPostcode(postcode);
 
     // Audit log (fire-and-forget)
-    db.insert(auditLogs)
-      .values({
-        userId: req.session.userId,
-        action: "postcode_lookup",
-        details: { postcode },
-        ipAddress: req.ip,
-      })
-      .catch(console.error);
+    if (db) {
+      db.insert(auditLogs)
+        .values({
+          userId: req.session.userId,
+          action: "postcode_lookup",
+          details: { postcode },
+          ipAddress: req.ip,
+        })
+        .catch(console.error);
+    }
 
     if (!result) {
       return res.status(404).json({ error: "Postcode not found" });

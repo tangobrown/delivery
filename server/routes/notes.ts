@@ -41,6 +41,11 @@ router.post("/", requireAuth, async (req, res) => {
     }
   }, 30000);
 
+  if (!db) {
+    clearTimeout(timeout);
+    return res.status(503).json({ error: "Database not configured — cannot save notes." });
+  }
+
   try {
     const body = req.body as Record<string, unknown>;
 

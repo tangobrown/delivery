@@ -45,13 +45,15 @@ router.post("/login", async (req, res) => {
       }
 
       // Audit log (fire-and-forget)
-      db.insert(auditLogs)
-        .values({
-          action: "login",
-          details: { username },
-          ipAddress: req.ip,
-        })
-        .catch(console.error);
+      if (db) {
+        db.insert(auditLogs)
+          .values({
+            action: "login",
+            details: { username },
+            ipAddress: req.ip,
+          })
+          .catch(console.error);
+      }
 
       res.json({ userId: "driver-session" });
     });
