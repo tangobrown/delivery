@@ -10,6 +10,29 @@ import { auditLogs } from "@shared/schema";
 
 const router = Router();
 
+router.get("/health", async (_req, res) => {
+  const spreadsheetId = process.env.GOOGLE_SHEET_ID;
+  if (!spreadsheetId) {
+    return res.status(500).json({
+      ok: false,
+      step: "config",
+      error: "GOOGLE_SHEET_ID env var is not set",
+    });
+  }
+
+  try {
+    const postcodes = await getAllPostcodes();
+    res.json({ ok: true, postcodesLoaded: postcodes.length });
+  } catch (err) {
+    res.status(500).json({
+      ok: false,
+      step: "sheets",
+      error: err instanceof Error ? err.message : String(err),
+      spreadsheetId: spreadsheetId.slice(0, 8) + "…",
+    });
+  }
+});
+
 router.post("/lookup", requireAuth, async (req, res) => {
   const { postcode } = req.body as { postcode?: string };
   if (!postcode) {
@@ -37,7 +60,8 @@ router.post("/lookup", requireAuth, async (req, res) => {
     res.json({ result });
   } catch (err) {
     console.error("Postcode lookup error:", err);
-    res.status(500).json({ error: "Failed to lookup postcode" });
+    const msg = err instanceof Error ? err.message : "Failed to lookup postcode";
+    res.status(500).json({ error: msg });
   }
 });
 
@@ -52,7 +76,8 @@ router.post("/lookup-multiple", requireAuth, async (req, res) => {
     res.json(data);
   } catch (err) {
     console.error("Multiple postcode lookup error:", err);
-    res.status(500).json({ error: "Failed to lookup postcodes" });
+    const msg = err instanceof Error ? err.message : "Failed to lookup postcodes";
+    res.status(500).json({ error: msg });
   }
 });
 
