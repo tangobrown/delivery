@@ -3,7 +3,6 @@ import { requireAuth } from "../middleware/auth.js";
 import { db } from "../db.js";
 import { driverNotes, auditLogs, insertDriverNoteSchema } from "@shared/schema";
 import { sendDriverNoteEmail } from "../services/email.js";
-import sharp from "sharp";
 import crypto from "crypto";
 
 const router = Router();
@@ -16,6 +15,8 @@ function isImage(fileName: string): boolean {
 }
 
 async function optimizeImage(base64Content: string): Promise<string> {
+  // Dynamically import sharp so a missing native binary doesn't crash the server
+  const sharp = (await import("sharp")).default;
   const buffer = Buffer.from(
     base64Content.replace(/^data:[^;]+;base64,/, ""),
     "base64"

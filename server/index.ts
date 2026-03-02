@@ -1,4 +1,5 @@
-import "dotenv/config";
+import { config } from "dotenv";
+config();
 import express from "express";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
@@ -65,6 +66,12 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(path.join(clientPath, "index.html"));
   });
 }
+
+// Global error handler — always return JSON, never HTML
+app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error("Unhandled server error:", err);
+  res.status(500).json({ error: err.message ?? "Internal server error" });
+});
 
 const PORT = parseInt(process.env.PORT ?? "3000", 10);
 app.listen(PORT, "0.0.0.0", () => {
