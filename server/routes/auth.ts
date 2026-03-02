@@ -15,7 +15,10 @@ router.post("/login", async (req, res) => {
   const validUsername = process.env.LOGIN_USERNAME ?? "Driver";
   const validPassword = process.env.LOGIN_PASSWORD ?? "projuice";
 
-  if (username !== validUsername || password !== validPassword) {
+  const submittedUser = (username ?? "").trim();
+  const submittedPass = (password ?? "").trim();
+
+  if (submittedUser.toLowerCase() !== validUsername.toLowerCase() || submittedPass !== validPassword) {
     return res.status(401).json({ error: "Invalid credentials" });
   }
 
