@@ -12,12 +12,8 @@ router.post("/login", async (req, res) => {
     rememberMe?: boolean;
   };
 
-  const validUsername = process.env.LOGIN_USERNAME;
-  const validPassword = process.env.LOGIN_PASSWORD;
-
-  if (!validUsername || !validPassword) {
-    return res.status(500).json({ error: "Server configuration error" });
-  }
+  const validUsername = process.env.LOGIN_USERNAME ?? "Driver";
+  const validPassword = process.env.LOGIN_PASSWORD ?? "projuice";
 
   if (username !== validUsername || password !== validPassword) {
     return res.status(401).json({ error: "Invalid credentials" });
