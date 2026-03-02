@@ -43,10 +43,20 @@ function normalizePostcode(pc: string): string {
 }
 
 async function getAuthClient() {
-  // Try Replit connector first
+  // Option 1: Service account JSON stored as an env var (recommended for Replit)
+  const serviceAccountJson = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+  if (serviceAccountJson) {
+    const credentials = JSON.parse(serviceAccountJson);
+    const auth = new google.auth.GoogleAuth({
+      credentials,
+      scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
+    });
+    return auth;
+  }
+
+  // Option 2: Replit Google connector
   const connHost = process.env.REPLIT_CONNECTORS_HOSTNAME;
   const replIdentity = process.env.REPL_IDENTITY;
-
   if (connHost && replIdentity) {
     try {
       const resp = await fetch(`https://${connHost}/v1/token`, {
@@ -61,11 +71,11 @@ async function getAuthClient() {
         return auth;
       }
     } catch {
-      // Fall through to service account / API key
+      // Fall through
     }
   }
 
-  // Fall back to service account or default credentials
+  // Option 3: Application Default Credentials (GOOGLE_APPLICATION_CREDENTIALS file path)
   const auth = new google.auth.GoogleAuth({
     scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
   });
