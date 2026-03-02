@@ -3,16 +3,15 @@ import { ProJuiceLogo } from "@/components/ProJuiceLogo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DeliveryEntryCard } from "@/components/DeliveryEntryCard";
 import { DriverNotesForm } from "@/components/DriverNotesForm";
-import { LogOut, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import type { DeliveryResult } from "@shared/types";
 
 interface DeliveryInstructionsProps {
   result: DeliveryResult;
   onBack: () => void;
-  onLogout: () => void;
 }
 
-export function DeliveryInstructions({ result, onBack, onLogout }: DeliveryInstructionsProps) {
+export function DeliveryInstructions({ result, onBack }: DeliveryInstructionsProps) {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card sticky top-0 z-40">
@@ -24,13 +23,7 @@ export function DeliveryInstructions({ result, onBack, onLogout }: DeliveryInstr
             <ProJuiceLogo size="sm" />
             <span className="text-sm text-muted-foreground hidden sm:block">Driver Portal</span>
           </div>
-          <div className="flex items-center gap-1">
-            <ThemeToggle />
-            <Button variant="ghost" size="sm" onClick={onLogout}>
-              <LogOut className="h-4 w-4 mr-1" />
-              Logout
-            </Button>
-          </div>
+          <ThemeToggle />
         </div>
       </header>
 

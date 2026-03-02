@@ -2,15 +2,14 @@ import { Button } from "@/components/ui/button";
 import { ProJuiceLogo } from "@/components/ProJuiceLogo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DriverNotesForm } from "@/components/DriverNotesForm";
-import { LogOut, ArrowLeft, SearchX } from "lucide-react";
+import { ArrowLeft, SearchX } from "lucide-react";
 
 interface NoResultsViewProps {
   postcode: string;
   onBack: () => void;
-  onLogout: () => void;
 }
 
-export function NoResultsView({ postcode, onBack, onLogout }: NoResultsViewProps) {
+export function NoResultsView({ postcode, onBack }: NoResultsViewProps) {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card sticky top-0 z-40">
@@ -21,13 +20,7 @@ export function NoResultsView({ postcode, onBack, onLogout }: NoResultsViewProps
             </Button>
             <ProJuiceLogo size="sm" />
           </div>
-          <div className="flex items-center gap-1">
-            <ThemeToggle />
-            <Button variant="ghost" size="sm" onClick={onLogout}>
-              <LogOut className="h-4 w-4 mr-1" />
-              Logout
-            </Button>
-          </div>
+          <ThemeToggle />
         </div>
       </header>
 

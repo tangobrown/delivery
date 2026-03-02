@@ -1,14 +1,11 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { ProJuiceLogo } from "@/components/ProJuiceLogo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { PostcodeLookup } from "@/components/PostcodeLookup";
 import { DeliveryInstructions } from "@/components/DeliveryInstructions";
 import { MultipleDeliveryResults } from "@/components/MultipleDeliveryResults";
 import { NoResultsView } from "@/components/NoResultsView";
-import { apiRequest } from "@/lib/queryClient";
-import { LogOut } from "lucide-react";
 import type { DeliveryResult } from "@shared/types";
 
 type ViewState =
@@ -17,28 +14,14 @@ type ViewState =
   | { type: "notFound"; postcode: string }
   | { type: "multiple"; results: DeliveryResult[]; notFound: string[] };
 
-interface DashboardPageProps {
-  onLogout: () => void;
-}
-
-export function DashboardPage({ onLogout }: DashboardPageProps) {
+export function DashboardPage() {
   const [view, setView] = useState<ViewState>({ type: "search" });
-
-  const handleLogout = async () => {
-    try {
-      await apiRequest("POST", "/api/auth/logout");
-    } catch {
-      // Ignore
-    }
-    onLogout();
-  };
 
   if (view.type === "single") {
     return (
       <DeliveryInstructions
         result={view.result}
         onBack={() => setView({ type: "search" })}
-        onLogout={handleLogout}
       />
     );
   }
@@ -48,7 +31,6 @@ export function DashboardPage({ onLogout }: DashboardPageProps) {
       <NoResultsView
         postcode={view.postcode}
         onBack={() => setView({ type: "search" })}
-        onLogout={handleLogout}
       />
     );
   }
@@ -59,7 +41,6 @@ export function DashboardPage({ onLogout }: DashboardPageProps) {
         results={view.results}
         notFound={view.notFound}
         onBack={() => setView({ type: "search" })}
-        onLogout={handleLogout}
       />
     );
   }
@@ -69,13 +50,7 @@ export function DashboardPage({ onLogout }: DashboardPageProps) {
       <header className="border-b bg-card sticky top-0 z-40">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <ProJuiceLogo size="sm" />
-          <div className="flex items-center gap-1">
-            <ThemeToggle />
-            <Button variant="ghost" size="sm" onClick={handleLogout}>
-              <LogOut className="h-4 w-4 mr-1" />
-              Logout
-            </Button>
-          </div>
+          <ThemeToggle />
         </div>
       </header>
 

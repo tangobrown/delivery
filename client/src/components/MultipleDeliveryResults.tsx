@@ -7,17 +7,16 @@ import { DeliveryEntryCard } from "@/components/DeliveryEntryCard";
 import { DriverNotesForm } from "@/components/DriverNotesForm";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { generatePDF } from "@/lib/pdf";
-import { LogOut, ArrowLeft, FileDown, Loader2 } from "lucide-react";
+import { ArrowLeft, FileDown, Loader2 } from "lucide-react";
 import type { DeliveryResult } from "@shared/types";
 
 interface MultipleDeliveryResultsProps {
   results: DeliveryResult[];
   notFound: string[];
   onBack: () => void;
-  onLogout: () => void;
 }
 
-export function MultipleDeliveryResults({ results, notFound, onBack, onLogout }: MultipleDeliveryResultsProps) {
+export function MultipleDeliveryResults({ results, notFound, onBack }: MultipleDeliveryResultsProps) {
   const [generatingPdf, setGeneratingPdf] = useState(false);
 
   const handleDownloadPdf = async () => {
@@ -49,10 +48,6 @@ export function MultipleDeliveryResults({ results, notFound, onBack, onLogout }:
               PDF
             </Button>
             <ThemeToggle />
-            <Button variant="ghost" size="sm" onClick={onLogout}>
-              <LogOut className="h-4 w-4 mr-1" />
-              Logout
-            </Button>
           </div>
         </div>
       </header>
